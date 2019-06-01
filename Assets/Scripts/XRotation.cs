@@ -42,15 +42,11 @@ public class XRotation : MonoBehaviour
         {
             rotX = Mathf.Lerp(transform.localEulerAngles.x, transform.localEulerAngles.x + rotationSensitivity * f0vectorAmp * Mathf.Sign(-f0Vector.y), Time.deltaTime);
 
-            Debug.Log(rotX);
-
             if (rotX < maxX && rotX > minX) rotX = previuseRotX; 
-            else Debug.Log("Приемлимое значение");
 
             previuseRotX = rotX;
 
             transform.localEulerAngles = new Vector3(rotX, transform.localEulerAngles.y, transform.localEulerAngles.z);
-            //Debug.Log(transform.localEulerAngles);
         }
 
         _f0startPos = _touch0.position;
@@ -62,6 +58,12 @@ public class XRotation : MonoBehaviour
         return Mathf.Sign(Mathf.Abs(f0vector.y) - Mathf.Abs(f0vector.x)) > 0 &&
                Mathf.Sign(Mathf.Abs(f1vector.y) - Mathf.Abs(f1vector.x)) > 0 && 
                Mathf.Sign(f0vector.y) == Mathf.Sign(f1vector.y);
+    }
+
+    public Vector2 ZandYPositionOnRotationX()
+    {
+        Vector2 normolizeVector = new Vector2(transform.localPosition.z, transform.localPosition.y);
+        return normolizeVector.normalized;
     }
 
     private void ResetRotation()

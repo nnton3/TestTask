@@ -2,6 +2,12 @@
 
 public class CameraZoom : MonoBehaviour
 {
+    XRotation _xRotation;
+    private void Start()
+    {
+        _xRotation = GetComponentInParent<XRotation>();
+    }
+
     private void Update()
     {
         if (Input.touchCount == 2)
@@ -18,29 +24,33 @@ public class CameraZoom : MonoBehaviour
     private float previousPositionDifference;
     [SerializeField] private float minY = 3;
     [SerializeField] private float maxY = 30;
-    float posY;
-    float previusePosY;
+    Vector3 posY;
+    Vector3 previusePosY;
     void ZoomCamera()
     {
         float positionDifference = FingerPositionDifference();
         float zoomDirection = -Mathf.Sign(positionDifference);
         float zoomAmp = Mathf.Abs(positionDifference);
+        float zoomcoefficient = zoomDirection * zoomAmp * zoomSensitivity;
+        Vector3 moveVector = new Vector3(0, zoomcoefficient, -zoomcoefficient);
         if ((int)previousPositionDifference != (int)positionDifference)
         {
-            posY = Mathf.Lerp(transform.position.y, transform.position.y + zoomDirection * zoomSensitivity * zoomAmp, Time.deltaTime);
+            posY = Vector3.Lerp(transform.localPosition, transform.localPosition + moveVector, Time.deltaTime);
 
-            if (posY < minY)
+            Debug.Log(posY);
+
+            if (posY.y < minY)
             {
                 posY = previusePosY;
             }
 
-            if (posY > maxY)
+            if (posY.y > maxY)
             {
                 posY = previusePosY;
             }
             
             previusePosY = posY;
-            transform.position = new Vector3(transform.position.x, posY, transform.position.z);
+            transform.localPosition = posY;
 
             previousPositionDifference = positionDifference;
         }
